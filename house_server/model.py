@@ -14,6 +14,7 @@ from sklearn.pipeline import Pipeline
 from xgboost import XGBRegressor
 import os
 from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
 from decouple import config
 from sqlalchemy.types import *
 
@@ -38,6 +39,9 @@ AREAS_LIST = [
 
 
 engine=create_engine(f"postgresql+psycopg2://{pg_user}:{pg_password}@localhost:{pg_port}/{pg_db}")
+# if not database_exists(engine.url):
+#     create_database(engine.url)
+# print(database_exists(engine.url))
 
 df_schema = {
   "id": INTEGER,    
@@ -248,7 +252,7 @@ def main():
         print("Parsing",name)
         base_url_with_page = f"https://krisha.kz/prodazha/kvartiry/almaty-{name}/?page="
         # os.remove(f'./models/Xgboost_model_{name}.pkl')
-        for i in range(1, 500):
+        for i in range(1, 2):
             try:
                 url_gen = base_url_with_page + str(i)
                 html = requests.get(url_gen).text

@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:14-alpine
     ports:
-      - 5432
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
     
     environment:
       POSTGRES_USER: "${POSTGRES_USER}"
@@ -14,6 +14,9 @@ services:
     
     volumes:
       - ./data/db:/var/lib/postgresql/data/
+    
+    healthcheck:
+          test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
 
   house_website:
     build:
@@ -25,6 +28,9 @@ services:
 
     volumes:
       - ./house_website:/code/house_website
+    
+    depends_on:
+      - house_server
   
   house_server: 
     build: 
@@ -37,12 +43,15 @@ services:
       POSTGRES_DB: "${POSTGRES_DB}"
       POSTGRES_PORT: "${POSTGRES_PORT}"
       POSTGRES_HOST: "${POSTGRES_HOST}"
+      SECRET_KEY: "${SECRET_KEY}"
+      DEBUG: ${DEBUG}
 
     ports:
-      - '8000:8000'
+      - ${SERVER_PORT}:${SERVER_PORT}
 
     volumes:
       - ./house_server:/app/house_server
-
+    
     depends_on:
-      - db
+        db:
+          condition: service_healthy
