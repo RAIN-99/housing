@@ -38,7 +38,6 @@ export function Navigation() {
         </div>
       </span>
       <span>
-        <Link to="/login" className="mx-5">Sign in</Link>
         <Link to="/" className="mx-5">Main</Link>
         <Link to="/analytics" className="ml-5">Analytics</Link>
       </span>

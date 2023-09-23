@@ -15,7 +15,7 @@ export const useGetHouses = (params: IData) => {
     try {
       setError('')
       setLoading(true)
-      const response = await axios.get<IHouse[]>(`http://127.0.0.1:8000/${area}/`)
+      const response = await axios.get<IHouse[]>(`http://localhost:8000/${area}/`)
       setProducts(response.data)
       setLoading(false)
     } catch (e: unknown) {
@@ -30,7 +30,6 @@ export const useGetHouses = (params: IData) => {
       return
     }
     fetchProducts()
-    console.log(params.area)
   },[area])
 
   return { products, error, loading }

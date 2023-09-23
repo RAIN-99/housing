@@ -1,9 +1,7 @@
 *.pyc
 __pycache__
 db.sqlite3
-/env
 /data/
-*.env
 .vscode
 house_website/node_modules
 house_server/env

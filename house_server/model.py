@@ -25,6 +25,7 @@ pg_user = config("POSTGRES_USER")
 pg_password = config("POSTGRES_PASSWORD")
 pg_port = config("POSTGRES_PORT")
 pg_db = config("POSTGRES_DB")
+pg_host=config("POSTGRES_HOST")
 
 AREAS_LIST = [
     "medeuskij",
@@ -38,7 +39,7 @@ AREAS_LIST = [
 ]
 
 
-engine=create_engine(f"postgresql+psycopg2://{pg_user}:{pg_password}@localhost:{pg_port}/{pg_db}")
+engine=create_engine(f"postgresql+psycopg2://{pg_user}:{pg_password}@{pg_host}:{pg_port}/{pg_db}")
 # if not database_exists(engine.url):
 #     create_database(engine.url)
 # print(database_exists(engine.url))
@@ -180,7 +181,7 @@ def modeling(data):
     full_data=data
 
     features, target = full_data.drop(columns=['price',"image", "description"]), full_data['price']
-    X_train,X_test,y_train,y_test=train_test_split(features,target,shuffle=True,test_size=0.02)
+    X_train,X_test,y_train,y_test=train_test_split(features,target,shuffle=True)
     # pd.DataFrame(X_train).to_csv(f'./models/{i}/X_train.csv',index=False)
     # pd.DataFrame(X_test).to_csv(f'./models/{i}/X_test.csv',index=False)
     # pd.DataFrame(y_train).to_csv(f'./models/{i}/y_train.csv',index=False)
@@ -252,7 +253,7 @@ def main():
         print("Parsing",name)
         base_url_with_page = f"https://krisha.kz/prodazha/kvartiry/almaty-{name}/?page="
         # os.remove(f'./models/Xgboost_model_{name}.pkl')
-        for i in range(1, 2):
+        for i in range(1, 10):
             try:
                 url_gen = base_url_with_page + str(i)
                 html = requests.get(url_gen).text
@@ -266,11 +267,11 @@ def main():
         full_data = clean()
         os.remove(f'./data.csv')
 
-        print("Modeling",name)
-        model = modeling(full_data)
+        # print("Modeling",name)
+        # model = modeling(full_data)
 
-        print("Save Model",name)
-        dill.dump(model, open(f'./models/Xgboost_model_{name}.pkl', 'wb'))
+        # print("Save Model",name)
+        # dill.dump(model, open(f'./models/Xgboost_model_{name}.pkl', 'wb'))
         
         try:
             full_data.to_sql(f'houses_{name}', engine, if_exists= 'replace', index=True, index_label="id", dtype=df_schema)

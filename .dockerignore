@@ -2,4 +2,3 @@ house_website/node_modules
 house_website/DockerFile
 house_server/env
 house_server.DockerFile
-.env*
